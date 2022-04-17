@@ -24,15 +24,21 @@ public class Board extends JPanel implements ActionListener {
 
     private final int x[] = new int[ALL_DOTS];
     private final int y[] = new int[ALL_DOTS];
+    private final int x2[] = new int[ALL_DOTS];
+    private final int y2[] = new int[ALL_DOTS];
 
     private int dots;
     private int apple_x;
     private int apple_y;
 
-    private boolean leftDirection = false;
-    private boolean rightDirection = true;
-    private boolean upDirection = false;
-    private boolean downDirection = false;
+    private boolean sone_leftDirection = false;
+    private boolean sone_rightDirection = true;
+    private boolean sone_upDirection = false;
+    private boolean sone_downDirection = false;
+    private boolean stwo_leftDirection = false;
+    private boolean stwo_rightDirection = true;
+    private boolean stwo_upDirection = false;
+    private boolean stwo_downDirection = false;
     private boolean inGame = true;
 
     private Timer timer;
@@ -72,9 +78,14 @@ public class Board extends JPanel implements ActionListener {
 
         dots = 3;
 
-        for (int z = 0; z < dots; z++) {
-            x[z] = 50 - z * 10;
+        for (int z = 0; z < dots; z++) { // draws first snake
+            x[z] = 50 - (z * 10);
             y[z] = 50;
+        }
+
+        for (int y = 0; y<dots; y++){ // draws second snake
+            x2[y] = 150 - (y * 10);
+            y2[y] = 50;
         }
         
         locateApple();
@@ -99,10 +110,20 @@ public class Board extends JPanel implements ActionListener {
             for (int z = 0; z < dots; z++) {
                 if (z == 0) {
                     g.drawImage(head, x[z], y[z], this);
+                    g.drawImage(head, x2[z], y2[z], this);
                 } else {
                     g.drawImage(ball, x[z], y[z], this);
+                    g.drawImage(ball, x2[z], y2[z], this);
                 }
             }
+
+            // for (int y = 0; y<dots; y++){
+            //     if(y == 0){
+            //         g.drawImage(head, x2[y], y2[y], this);
+            //     } else {
+            //         g.drawImage(ball, x2[y], y2[y], this);
+            //     }
+            // }
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -137,22 +158,40 @@ public class Board extends JPanel implements ActionListener {
         for (int z = dots; z > 0; z--) {
             x[z] = x[(z - 1)];
             y[z] = y[(z - 1)];
+            x2[z] = x2[(z-1)];
+            y2[z] = y2[(z-1)];
         }
 
-        if (leftDirection) {
+        if (sone_leftDirection) {
             x[0] -= DOT_SIZE;
         }
 
-        if (rightDirection) {
+        if(stwo_leftDirection){
+            x2[0] -= DOT_SIZE;
+        }
+
+        if (sone_rightDirection) {
             x[0] += DOT_SIZE;
         }
 
-        if (upDirection) {
+        if(stwo_rightDirection){
+            x2[0] += DOT_SIZE;
+        }
+
+        if (sone_upDirection) {
             y[0] -= DOT_SIZE;
         }
 
-        if (downDirection) {
+        if(stwo_upDirection){
+            y2[0] -= DOT_SIZE;
+        }
+
+        if (sone_downDirection) {
             y[0] += DOT_SIZE;
+        }
+
+        if(stwo_downDirection){
+            y2[0] += DOT_SIZE;
         }
     }
 
@@ -163,9 +202,16 @@ public class Board extends JPanel implements ActionListener {
             if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
                 inGame = false;
             }
+            if ((z > 4) && (x2[0] == x[z]) && (y2[0] == y2[z])){
+                inGame = false;
+            }
         }
 
         if (y[0] >= B_HEIGHT) {
+            inGame = false;
+        }
+
+        if (y2[0] >= B_HEIGHT){
             inGame = false;
         }
 
@@ -173,11 +219,23 @@ public class Board extends JPanel implements ActionListener {
             inGame = false;
         }
 
+        if (y2[0] < 0){
+            inGame = false;
+        }
+
         if (x[0] >= B_WIDTH) {
             inGame = false;
         }
 
+        if (x2[0] >= B_WIDTH){
+            inGame = false;
+        }
+
         if (x[0] < 0) {
+            inGame = false;
+        }
+
+        if (x2[0] < 0){
             inGame = false;
         }
         
@@ -215,28 +273,52 @@ public class Board extends JPanel implements ActionListener {
 
             int key = e.getKeyCode();
 
-            if ((key == KeyEvent.VK_LEFT) && (!rightDirection)) {
-                leftDirection = true;
-                upDirection = false;
-                downDirection = false;
+            if ((key == KeyEvent.VK_LEFT) && (!sone_rightDirection)) { // left movement snake one
+                sone_leftDirection = true;
+                sone_upDirection = false;
+                sone_downDirection = false;
             }
 
-            if ((key == KeyEvent.VK_RIGHT) && (!leftDirection)) {
-                rightDirection = true;
-                upDirection = false;
-                downDirection = false;
+            if((key == KeyEvent.VK_A) && (!stwo_rightDirection)) { // left movement snake two
+                stwo_leftDirection = true;
+                stwo_upDirection = false;
+                stwo_downDirection = false;
             }
 
-            if ((key == KeyEvent.VK_UP) && (!downDirection)) {
-                upDirection = true;
-                rightDirection = false;
-                leftDirection = false;
+            if ((key == KeyEvent.VK_RIGHT) && (!sone_leftDirection)) { // right movement snake one
+                sone_rightDirection = true;
+                sone_upDirection = false;
+                sone_downDirection = false;
             }
 
-            if ((key == KeyEvent.VK_DOWN) && (!upDirection)) {
-                downDirection = true;
-                rightDirection = false;
-                leftDirection = false;
+            if((key == KeyEvent.VK_D) && (!stwo_leftDirection)){ // right movement snake two
+                stwo_rightDirection = true;
+                stwo_upDirection = false;
+                stwo_downDirection = false;
+            }
+
+            if ((key == KeyEvent.VK_UP) && (!sone_downDirection)) { // up movement snake one
+                sone_upDirection = true;
+                sone_rightDirection = false;
+                sone_leftDirection = false;
+            }
+
+            if ((key == KeyEvent.VK_W) && (!stwo_downDirection)) { // up movement snake two
+                stwo_upDirection = true;
+                stwo_rightDirection = false;
+                stwo_leftDirection = false;
+            }
+
+            if ((key == KeyEvent.VK_DOWN) && (!sone_upDirection)) { // down movement snake one
+                sone_downDirection = true;
+                sone_rightDirection = false;
+                sone_leftDirection = false;
+            }
+
+            if ((key == KeyEvent.VK_S) && (!stwo_upDirection)) {
+                stwo_downDirection = true;
+                stwo_rightDirection = false;
+                stwo_leftDirection = false;
             }
         }
     }

@@ -13,6 +13,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+
+// this is the code on which you have to work
+
 public class Board extends JPanel implements ActionListener {
 
     private final int B_WIDTH = 300;
@@ -42,6 +45,9 @@ public class Board extends JPanel implements ActionListener {
     private boolean stwo_downDirection = false;
     private boolean inGame = true;
 
+    private int snake_one_points;
+    private int snake_two_points;
+
     private Timer timer;
     private Image ball;
     private Image apple;
@@ -50,6 +56,8 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         
         initBoard();
+        this.snake_one_points = 0;
+        this.snake_two_points = 0;
     }
     
     private void initBoard() {
@@ -135,9 +143,18 @@ public class Board extends JPanel implements ActionListener {
         }        
     }
 
-    private void gameOver(Graphics g) {
+    private void gameOver(Graphics g) { // change text output when game has ended
         
-        String msg = "Game Over";
+        String msg = "";
+        System.out.println(snake_one_points + " " + snake_two_points);
+
+        if(snake_one_points > snake_two_points){
+            msg = "Player one wins";
+        } else if(snake_two_points > snake_one_points){
+            msg = "Player two wins";
+        } else {
+            msg = "Draw";
+        }
         Font small = new Font("Helvetica", Font.BOLD, 14);
         FontMetrics metr = getFontMetrics(small);
 
@@ -146,17 +163,22 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(msg, (B_WIDTH - metr.stringWidth(msg)) / 2, B_HEIGHT / 2);
     }
 
-    private void checkApple() {
+    private void checkApple() { // code for eating an apple
 
         if ((x[0] == apple_x) && (y[0] == apple_y)) { // first snake eats apple
+            ++snake_one_points;
             sone_dots++;
             locateApple();
         }
 
-        if ((x2[0] == apple_x) && (y2[0] == apple_y)) {
+        if ((x2[0] == apple_x) && (y2[0] == apple_y)) { // second snake eats apple
+            ++snake_two_points;
             stwo_dots++;
             locateApple();
         }
+
+        System.out.println("First player points: " + snake_one_points);
+        System.out.println("Second player points: " + snake_two_points);
     }
 
     private void move() {
@@ -204,36 +226,44 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
-    private void checkCollision() {
+    private void checkCollision() { // code where you have to initialize flags
 
         for (int z = sone_dots; z > 0; z--) {
 
             if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
                 inGame = false; // add flag that snake_one has eaten itself
+                // second player should win
                 break;
             }
 
             if((y[0] == y2[z]) && (x[0] == x2[z])){ // first snake bites second snake
                 inGame = false;
+                // second player should win
                 break;
             }
             
         }
 
-        if((y[0] == y2[0]) && (x[0] == x2[0])){ // head to head collision
+        if((y[0] == y2[0]) && (x[0] == x2[0])){ // head to head collision 
             System.out.println("Head to head collision");
             inGame = false;
+            // this means that the one with the most points wins
+            // compare points
         }
 
         for (int p = stwo_dots; p > 0; p--) {
 
             if ((p > 4) && (x2[0] == x[p]) && (y2[0] == y2[p])){
                 inGame = false; // add flag that snake_two has eaten itself
+                snake_one_points=0;
+                // first player wins
                 break;
             }
 
             if((y2[0] == y[p]) && (x2[0] == x[p])){ // second snake bites first snake
                 inGame = false;
+                snake_two_points=0;
+                // first player wins
                 break;
             }
 

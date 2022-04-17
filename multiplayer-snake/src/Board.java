@@ -27,7 +27,8 @@ public class Board extends JPanel implements ActionListener {
     private final int x2[] = new int[ALL_DOTS];
     private final int y2[] = new int[ALL_DOTS];
 
-    private int dots;
+    private int sone_dots;
+    private int stwo_dots;
     private int apple_x;
     private int apple_y;
 
@@ -76,16 +77,17 @@ public class Board extends JPanel implements ActionListener {
 
     private void initGame() {
 
-        dots = 3;
+        sone_dots = 3;
+        stwo_dots = 3;
 
-        for (int z = 0; z < dots; z++) { // draws first snake
+        for (int z = 0; z < sone_dots; z++) { // draws first snake
             x[z] = 50 - (z * 10);
-            y[z] = 50;
+            y[z] = 100;
         }
 
-        for (int y = 0; y<dots; y++){ // draws second snake
+        for (int y = 0; y< stwo_dots; y++){ // draws second snake
             x2[y] = 150 - (y * 10);
-            y2[y] = 50;
+            y2[y] = 100;
         }
         
         locateApple();
@@ -107,23 +109,23 @@ public class Board extends JPanel implements ActionListener {
 
             g.drawImage(apple, apple_x, apple_y, this);
 
-            for (int z = 0; z < dots; z++) {
+            for (int z = 0; z < sone_dots; z++) {
                 if (z == 0) {
                     g.drawImage(head, x[z], y[z], this);
-                    g.drawImage(head, x2[z], y2[z], this);
+                    // g.drawImage(head, x2[z], y2[z], this);
                 } else {
                     g.drawImage(ball, x[z], y[z], this);
-                    g.drawImage(ball, x2[z], y2[z], this);
+                    // g.drawImage(ball, x2[z], y2[z], this);
                 }
             }
 
-            // for (int y = 0; y<dots; y++){
-            //     if(y == 0){
-            //         g.drawImage(head, x2[y], y2[y], this);
-            //     } else {
-            //         g.drawImage(ball, x2[y], y2[y], this);
-            //     }
-            // }
+            for (int p = 0; p < stwo_dots; p++){
+                if (p==0){
+                    g.drawImage(head, x2[p], y2[p], this);
+                } else {
+                    g.drawImage(ball, x2[p], y2[p], this);
+                }
+            }
 
             Toolkit.getDefaultToolkit().sync();
 
@@ -146,24 +148,31 @@ public class Board extends JPanel implements ActionListener {
 
     private void checkApple() {
 
-        if ((x[0] == apple_x) && (y[0] == apple_y)) {
+        if ((x[0] == apple_x) && (y[0] == apple_y)) { // first snake eats apple
+            sone_dots++;
+            locateApple();
+        }
 
-            dots++;
+        if ((x2[0] == apple_x) && (y2[0] == apple_y)) {
+            stwo_dots++;
             locateApple();
         }
     }
 
     private void move() {
 
-        for (int z = dots; z > 0; z--) {
-            x[z] = x[(z - 1)];
-            y[z] = y[(z - 1)];
-            x2[z] = x2[(z-1)];
-            y2[z] = y2[(z-1)];
+        for (int z = sone_dots; z > 0; z--) {
+            // x[z] = x[(z - 1)];
+            // y[z] = y[(z - 1)];
+        }
+
+        for (int p = stwo_dots; p > 0; p--){
+            x2[p] = x2[(p-1)];
+            y2[p] = y2[(p-1)];
         }
 
         if (sone_leftDirection) {
-            x[0] -= DOT_SIZE;
+            // x[0] -= DOT_SIZE;
         }
 
         if(stwo_leftDirection){
@@ -171,7 +180,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_rightDirection) {
-            x[0] += DOT_SIZE;
+            // x[0] += DOT_SIZE;
         }
 
         if(stwo_rightDirection){
@@ -179,7 +188,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_upDirection) {
-            y[0] -= DOT_SIZE;
+            // y[0] -= DOT_SIZE;
         }
 
         if(stwo_upDirection){
@@ -187,7 +196,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_downDirection) {
-            y[0] += DOT_SIZE;
+            // y[0] += DOT_SIZE;
         }
 
         if(stwo_downDirection){
@@ -197,14 +206,37 @@ public class Board extends JPanel implements ActionListener {
 
     private void checkCollision() {
 
-        for (int z = dots; z > 0; z--) {
+        for (int z = sone_dots; z > 0; z--) {
 
             if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
-                inGame = false;
+                inGame = false; // add flag that snake_one has eaten itself
+                break;
             }
-            if ((z > 4) && (x2[0] == x[z]) && (y2[0] == y2[z])){
+
+            if((y[0] == y2[z]) && (x[0] == x2[z])){ // first snake bites second snake
                 inGame = false;
+                break;
             }
+            
+        }
+
+        if((y[0] == y2[0]) && (x[0] == x2[0])){ // head to head collision
+            System.out.println("Head to head collision");
+            inGame = false;
+        }
+
+        for (int p = stwo_dots; p > 0; p--) {
+
+            if ((p > 4) && (x2[0] == x[p]) && (y2[0] == y2[p])){
+                inGame = false; // add flag that snake_two has eaten itself
+                break;
+            }
+
+            if((y2[0] == y[p]) && (x2[0] == x[p])){ // second snake bites first snake
+                inGame = false;
+                break;
+            }
+
         }
 
         if (y[0] >= B_HEIGHT) {

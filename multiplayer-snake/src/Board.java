@@ -120,10 +120,8 @@ public class Board extends JPanel implements ActionListener {
             for (int z = 0; z < sone_dots; z++) {
                 if (z == 0) {
                     g.drawImage(head, x[z], y[z], this);
-                    // g.drawImage(head, x2[z], y2[z], this);
                 } else {
                     g.drawImage(ball, x[z], y[z], this);
-                    // g.drawImage(ball, x2[z], y2[z], this);
                 }
             }
 
@@ -184,8 +182,8 @@ public class Board extends JPanel implements ActionListener {
     private void move() {
 
         for (int z = sone_dots; z > 0; z--) {
-            // x[z] = x[(z - 1)];
-            // y[z] = y[(z - 1)];
+            x[z] = x[(z - 1)];
+            y[z] = y[(z - 1)];
         }
 
         for (int p = stwo_dots; p > 0; p--){
@@ -194,7 +192,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_leftDirection) {
-            // x[0] -= DOT_SIZE;
+            x[0] -= DOT_SIZE;
         }
 
         if(stwo_leftDirection){
@@ -202,7 +200,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_rightDirection) {
-            // x[0] += DOT_SIZE;
+            x[0] += DOT_SIZE;
         }
 
         if(stwo_rightDirection){
@@ -210,7 +208,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_upDirection) {
-            // y[0] -= DOT_SIZE;
+            y[0] -= DOT_SIZE;
         }
 
         if(stwo_upDirection){
@@ -218,7 +216,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (sone_downDirection) {
-            // y[0] += DOT_SIZE;
+            y[0] += DOT_SIZE;
         }
 
         if(stwo_downDirection){
@@ -271,34 +269,42 @@ public class Board extends JPanel implements ActionListener {
 
         if (y[0] >= B_HEIGHT) {
             inGame = false;
+            snake_one_points=-1;
         }
 
         if (y2[0] >= B_HEIGHT){
             inGame = false;
+            snake_two_points=-1;
         }
 
         if (y[0] < 0) {
             inGame = false;
+            snake_one_points=-1;
         }
 
         if (y2[0] < 0){
             inGame = false;
+            snake_two_points=-1;
         }
 
         if (x[0] >= B_WIDTH) {
             inGame = false;
+            snake_one_points=-1;
         }
 
         if (x2[0] >= B_WIDTH){
             inGame = false;
+            snake_two_points=-1;
         }
 
         if (x[0] < 0) {
             inGame = false;
+            snake_one_points=-1;
         }
 
         if (x2[0] < 0){
             inGame = false;
+            snake_two_points=-1;
         }
         
         if (!inGame) {

@@ -14,8 +14,6 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 
-// this is the code on which you have to work
-
 public class Board extends JPanel implements ActionListener {
 
     private final int B_WIDTH = 300;
@@ -52,6 +50,8 @@ public class Board extends JPanel implements ActionListener {
     private Image ball;
     private Image apple;
     private Image head;
+    private Image ball_two;
+    private Image head_two;
 
     public Board() {
         
@@ -81,6 +81,12 @@ public class Board extends JPanel implements ActionListener {
 
         ImageIcon iih = new ImageIcon("resources/head.png");
         head = iih.getImage();
+
+        ImageIcon iit = new ImageIcon("resources/head2.png");
+        head_two = iit.getImage();
+
+        ImageIcon iiv = new ImageIcon("resources/dot2.png");
+        ball_two = iiv.getImage();
     }
 
     private void initGame() {
@@ -127,9 +133,9 @@ public class Board extends JPanel implements ActionListener {
 
             for (int p = 0; p < stwo_dots; p++){
                 if (p==0){
-                    g.drawImage(head, x2[p], y2[p], this);
+                    g.drawImage(head_two, x2[p], y2[p], this);
                 } else {
-                    g.drawImage(ball, x2[p], y2[p], this);
+                    g.drawImage(ball_two, x2[p], y2[p], this);
                 }
             }
 
@@ -147,9 +153,9 @@ public class Board extends JPanel implements ActionListener {
         System.out.println(snake_one_points + " " + snake_two_points);
 
         if(snake_one_points > snake_two_points){
-            msg = "Player one wins";
+            msg = "Green snake wins";
         } else if(snake_two_points > snake_one_points){
-            msg = "Player two wins";
+            msg = "Red snake wins";
         } else {
             msg = "Draw";
         }
@@ -175,49 +181,49 @@ public class Board extends JPanel implements ActionListener {
             locateApple();
         }
 
-        System.out.println("First player points: " + snake_one_points);
-        System.out.println("Second player points: " + snake_two_points);
+        // System.out.println("First player points: " + snake_one_points);
+        // System.out.println("Second player points: " + snake_two_points);
     }
 
     private void move() {
 
-        for (int z = sone_dots; z > 0; z--) {
-            x[z] = x[(z - 1)];
-            y[z] = y[(z - 1)];
-        }
+        // for (int z = sone_dots; z > 0; z--) {
+        //     x[z] = x[(z - 1)];
+        //     y[z] = y[(z - 1)];
+        // }
 
         for (int p = stwo_dots; p > 0; p--){
             x2[p] = x2[(p-1)];
             y2[p] = y2[(p-1)];
         }
 
-        if (sone_leftDirection) {
-            x[0] -= DOT_SIZE;
-        }
+        // if (sone_leftDirection) {
+        //     x[0] -= DOT_SIZE;
+        // }
 
         if(stwo_leftDirection){
             x2[0] -= DOT_SIZE;
         }
 
-        if (sone_rightDirection) {
-            x[0] += DOT_SIZE;
-        }
+        // if (sone_rightDirection) {
+        //     x[0] += DOT_SIZE;
+        // }
 
         if(stwo_rightDirection){
             x2[0] += DOT_SIZE;
         }
 
-        if (sone_upDirection) {
-            y[0] -= DOT_SIZE;
-        }
+        // if (sone_upDirection) {
+        //     y[0] -= DOT_SIZE;
+        // }
 
         if(stwo_upDirection){
             y2[0] -= DOT_SIZE;
         }
 
-        if (sone_downDirection) {
-            y[0] += DOT_SIZE;
-        }
+        // if (sone_downDirection) {
+        //     y[0] += DOT_SIZE;
+        // }
 
         if(stwo_downDirection){
             y2[0] += DOT_SIZE;
@@ -231,12 +237,14 @@ public class Board extends JPanel implements ActionListener {
             if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
                 inGame = false; // add flag that snake_one has eaten itself
                 // second player should win
+                snake_one_points = -1;
                 break;
             }
 
             if((y[0] == y2[z]) && (x[0] == x2[z])){ // first snake bites second snake
                 inGame = false;
                 // second player should win
+                snake_two_points = -1;
                 break;
             }
             
@@ -251,21 +259,22 @@ public class Board extends JPanel implements ActionListener {
 
         for (int p = stwo_dots; p > 0; p--) {
 
-            if ((p > 4) && (x2[0] == x[p]) && (y2[0] == y2[p])){
-                inGame = false; // add flag that snake_two has eaten itself
-                snake_one_points=0;
+            if ((x2[0] == x2[p]) && (y2[0] == y2[p])){ //  second snake eats itself
+                inGame = false; 
+                snake_two_points=-1;
                 // first player wins
                 break;
             }
 
-            if((y2[0] == y[p]) && (x2[0] == x[p])){ // second snake bites first snake
+            if((y2[0] == y[p]) && (x2[0] == x[p])){  // second snake bites first snake
                 inGame = false;
-                snake_two_points=0;
-                // first player wins
+                snake_two_points=-1;
                 break;
             }
 
         }
+
+        // hitting a wall results in score of -1
 
         if (y[0] >= B_HEIGHT) {
             inGame = false;
@@ -383,7 +392,7 @@ public class Board extends JPanel implements ActionListener {
                 sone_leftDirection = false;
             }
 
-            if ((key == KeyEvent.VK_S) && (!stwo_upDirection)) {
+            if ((key == KeyEvent.VK_S) && (!stwo_upDirection)) { // down movement snake two
                 stwo_downDirection = true;
                 stwo_rightDirection = false;
                 stwo_leftDirection = false;

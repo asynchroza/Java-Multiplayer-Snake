@@ -142,7 +142,6 @@ public class Board extends JPanel implements ActionListener {
             Toolkit.getDefaultToolkit().sync();
 
         } else {
-
             gameOver(g);
         }        
     }
@@ -155,7 +154,7 @@ public class Board extends JPanel implements ActionListener {
         if(snake_one_points > snake_two_points){
             msg = "Green snake wins";
         } else if(snake_two_points > snake_one_points){
-            msg = "Red snake wins";
+            msg = "Blue snake wins";
         } else {
             msg = "Draw";
         }
@@ -187,43 +186,43 @@ public class Board extends JPanel implements ActionListener {
 
     private void move() {
 
-        // for (int z = sone_dots; z > 0; z--) {
-        //     x[z] = x[(z - 1)];
-        //     y[z] = y[(z - 1)];
-        // }
+        for (int z = sone_dots; z > 0; z--) {
+            x[z] = x[(z - 1)];
+            y[z] = y[(z - 1)];
+        }
 
         for (int p = stwo_dots; p > 0; p--){
             x2[p] = x2[(p-1)];
             y2[p] = y2[(p-1)];
         }
 
-        // if (sone_leftDirection) {
-        //     x[0] -= DOT_SIZE;
-        // }
+        if (sone_leftDirection) {
+            x[0] -= DOT_SIZE;
+        }
 
         if(stwo_leftDirection){
             x2[0] -= DOT_SIZE;
         }
 
-        // if (sone_rightDirection) {
-        //     x[0] += DOT_SIZE;
-        // }
+        if (sone_rightDirection) {
+            x[0] += DOT_SIZE;
+        }
 
         if(stwo_rightDirection){
             x2[0] += DOT_SIZE;
         }
 
-        // if (sone_upDirection) {
-        //     y[0] -= DOT_SIZE;
-        // }
+        if (sone_upDirection) {
+            y[0] -= DOT_SIZE;
+        }
 
         if(stwo_upDirection){
             y2[0] -= DOT_SIZE;
         }
 
-        // if (sone_downDirection) {
-        //     y[0] += DOT_SIZE;
-        // }
+        if (sone_downDirection) {
+            y[0] += DOT_SIZE;
+        }
 
         if(stwo_downDirection){
             y2[0] += DOT_SIZE;
@@ -234,7 +233,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (int z = sone_dots; z > 0; z--) {
 
-            if ((z > 4) && (x[0] == x[z]) && (y[0] == y[z])) {
+            if ((x[0] == x[z]) && (y[0] == y[z])) {
                 inGame = false; // add flag that snake_one has eaten itself
                 // second player should win
                 snake_one_points = -1;
@@ -244,7 +243,7 @@ public class Board extends JPanel implements ActionListener {
             if((y[0] == y2[z]) && (x[0] == x2[z])){ // first snake bites second snake
                 inGame = false;
                 // second player should win
-                snake_two_points = -1;
+                snake_one_points = -1;
                 break;
             }
             

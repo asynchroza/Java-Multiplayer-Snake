@@ -73,6 +73,11 @@ public class Board extends JPanel implements ActionListener {
 
     private void loadImages() {
 
+        System.out.println(System.getProperty("user.dir"));
+
+        // depending on what IDE you use, you might need to change the relative path of images
+        // the commented code is for IntelliJ , the uncommented code is for compiling and running from terminal and VSC
+
         ImageIcon iid = new ImageIcon("resources/dot.png");
         ball = iid.getImage();
 
@@ -87,6 +92,21 @@ public class Board extends JPanel implements ActionListener {
 
         ImageIcon iiv = new ImageIcon("resources/dot2.png");
         ball_two = iiv.getImage();
+
+//        ImageIcon iid = new ImageIcon("src/resources/dot.png");
+//        ball = iid.getImage();
+//
+//        ImageIcon iia = new ImageIcon("src/resources/apple.png");
+//        apple = iia.getImage();
+//
+//        ImageIcon iih = new ImageIcon("src/resources/head.png");
+//        head = iih.getImage();
+//
+//        ImageIcon iit = new ImageIcon("src/resources/head2.png");
+//        head_two = iit.getImage();
+//
+//        ImageIcon iiv = new ImageIcon("src/resources/dot2.png");
+//        ball_two = iiv.getImage();
     }
 
     private void initGame() {
